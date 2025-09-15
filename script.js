@@ -6,6 +6,7 @@ class SpinWheel {
         this.selectedNumberSpan = document.getElementById('selectedNumber');
         this.closePopupBtn = document.getElementById('closePopup');
         this.wheelSections = document.getElementById('wheelSections');
+        this.spinAudio = document.getElementById('spinAudio');
         
         this.isSpinning = false;
         this.currentRotation = 0;
@@ -41,6 +42,10 @@ class SpinWheel {
         this.spinBtn.disabled = true;
         this.spinBtn.textContent = 'Spinning...';
         
+        // Play the spinning audio
+        this.spinAudio.currentTime = 0; // Reset to beginning
+        this.spinAudio.play().catch(e => console.log('Audio play failed:', e));
+        
         const fullRotations = 5 + Math.random() * 5; 
         const randomAngle = Math.random() * 360;
         const totalRotation = this.currentRotation + (fullRotations * 360) + randomAngle;
@@ -57,6 +62,10 @@ class SpinWheel {
         this.isSpinning = false;
         this.spinBtn.disabled = false;
         this.spinBtn.textContent = 'SPIN!';
+        
+        // Stop the spinning audio
+        this.spinAudio.pause();
+        this.spinAudio.currentTime = 0;
         
         const normalizedRotation = (360 - (this.currentRotation % 360)) % 360;
         const sectionAngle = 360 / this.availableChallenges.length;
@@ -167,12 +176,21 @@ class SpinWheel {
             path.setAttribute('data-challenge', challenge);
     
             // --- Text positioning ---
-            const midAngle = (startAngle + endAngle) / 2;
-            const textRadius = radius * 0.55;
-            const textX = centerX + textRadius * Math.cos(midAngle);
-            const textY = centerY + textRadius * Math.sin(midAngle);
-    
-            const angleDeg = (midAngle * 180 / Math.PI);
+            let textX, textY, angleDeg;
+            
+            // Special handling for single remaining challenge
+            if (this.availableChallenges.length === 1) {
+                // Center the text in the middle of the circle
+                textX = centerX;
+                textY = centerY;
+                angleDeg = 0; // No rotation for centered text
+            } else {
+                const midAngle = (startAngle + endAngle) / 2;
+                const textRadius = radius * 0.55;
+                textX = centerX + textRadius * Math.cos(midAngle);
+                textY = centerY + textRadius * Math.sin(midAngle);
+                angleDeg = (midAngle * 180 / Math.PI);
+            }
     
             const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
             text.setAttribute('x', textX);
@@ -181,16 +199,22 @@ class SpinWheel {
             text.setAttribute('dominant-baseline', 'middle');
             text.setAttribute('fill', 'white');
             text.setAttribute('font-weight', 'bold');
-            text.setAttribute('transform', `rotate(${angleDeg}, ${textX}, ${textY})`);
+            
+            // Only apply rotation if not the single remaining challenge
+            if (this.availableChallenges.length > 1) {
+                text.setAttribute('transform', `rotate(${angleDeg}, ${textX}, ${textY})`);
+            }
     
             // --- Dynamic font scaling ---
             let baseFont = 1;
             if (this.availableChallenges.length > 8) baseFont = 0.5;
+            // For single challenge, use larger font
+            if (this.availableChallenges.length === 1) baseFont = 1.5;
             let fontSize = Math.max(0.5, baseFont - Math.floor(challenge.length / 15));
             text.setAttribute('font-size', fontSize);
     
             // --- Hard wrapping into multiple lines ---
-            const maxCharsPerLine = Math.max(12, Math.floor(sectionAngle / 8)); // depends on slice width
+            const maxCharsPerLine = this.availableChallenges.length === 1 ? 20 : Math.max(12, Math.floor(sectionAngle / 8));
             let words = challenge.split(' ');
             let line = '';
             let lines = [];

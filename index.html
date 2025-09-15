@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spin the Wheel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="logo-container logo-right">
+        <img src="mlsclogo.png" alt="MLSC Logo" class="logo">
+    </div>
+    <div class="logo-container logo-left">
+        <img src="wce.png" alt="WCE Logo" class="logo">
+    </div>
+    <div class="doll-container">
+        <img src="doll.png" alt="Doll" class="doll">
+    </div>
+    
+    <!-- Background Shapes -->
+    <div class="shape shape-1">
+        <img src="shapes.png" alt="Shape" class="shape-img">
+    </div>
+    <div class="shape shape-2">
+        <img src="shapes.png" alt="Shape" class="shape-img">
+    </div>
+    <div class="shape shape-3">
+        <img src="shapes.png" alt="Shape" class="shape-img">
+    </div>
+    <div class="container">
+        <h1>The Fresher's Arena - Spin the Wheel!</h1>
+        <div class="wheel-container">
+            <div class="wheel" id="wheel">
+                <svg class="wheel-svg" viewBox="0 0 1000 1000">
+                    <g id="wheelSections"></g>
+                </svg>
+            </div>
+            <div class="pointer"></div>
+        </div>
+        <button id="spinBtn" class="spin-button">SPIN!</button>
+    </div>
+
+    <!-- Popup Modal -->
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <h2>Your Challenge!</h2>
+            <p>You need to: <span id="selectedNumber"></span></p>
+            <button id="closePopup" class="close-button">Close</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

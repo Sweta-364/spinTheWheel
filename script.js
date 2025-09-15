@@ -7,6 +7,7 @@ class SpinWheel {
         this.closePopupBtn = document.getElementById('closePopup');
         this.wheelSections = document.getElementById('wheelSections');
         this.spinAudio = document.getElementById('spinAudio');
+        this.bgmAudio = document.getElementById('bgmAudio');
         
         this.isSpinning = false;
         this.currentRotation = 0;
@@ -24,11 +25,26 @@ class SpinWheel {
         
         this.init();
         this.initializeWheelSections();
+        this.startBackgroundMusic();
     }
     
     init() {
         this.spinBtn.addEventListener('click', () => this.spin());
         this.closePopupBtn.addEventListener('click', () => this.closePopup());
+    }
+    
+    startBackgroundMusic() {
+        // Set volume to 30% (0.3) for subtle background music
+        this.bgmAudio.volume = 0.3;
+        
+        // Start playing background music
+        this.bgmAudio.play().catch(e => {
+            console.log('Background music play failed:', e);
+            // If autoplay fails, try to play on first user interaction
+            document.addEventListener('click', () => {
+                this.bgmAudio.play().catch(err => console.log('BGM play failed on click:', err));
+            }, { once: true });
+        });
     }
     
     initializeWheelSections() {
@@ -41,6 +57,9 @@ class SpinWheel {
         this.isSpinning = true;
         this.spinBtn.disabled = true;
         this.spinBtn.textContent = 'Spinning...';
+        
+        // Pause background music during spinning
+        this.bgmAudio.pause();
         
         // Play the spinning audio
         this.spinAudio.currentTime = 0; // Reset to beginning
@@ -66,6 +85,9 @@ class SpinWheel {
         // Stop the spinning audio
         this.spinAudio.pause();
         this.spinAudio.currentTime = 0;
+        
+        // Resume background music after spinning
+        this.bgmAudio.play().catch(e => console.log('BGM resume failed:', e));
         
         const normalizedRotation = (360 - (this.currentRotation % 360)) % 360;
         const sectionAngle = 360 / this.availableChallenges.length;

@@ -19,7 +19,7 @@ class SpinWheel {
             "Dance on a song",
             "Tongue Twisters - 3 times"
         ];
-        this.colors = ['#FB4141', '#78C841', '#FB4141', '#78C841'];
+        this.colors = ['#ed327c', '#198b88', '#b65b82','#546065'];
         
         this.init();
         this.initializeWheelSections();
